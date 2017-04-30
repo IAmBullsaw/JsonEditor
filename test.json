@@ -1,0 +1,76 @@
+[
+  {
+    "_description": "Click on a card!",
+    "_unread": false,
+    "_images": [
+      ["welcome.png", "Header image"]
+      ],
+    "_text": [
+      "Hello!",
+      "What you see here are projects I've done or been a part of. Amongst them this website.",
+      "Feel free to explore. I can't say I've not hidden small surprises."
+      ],
+    "_title": "Welcome",
+    "_id": 0
+  },
+  {
+    "_description": "I finally made this website and it turned out quite OK.",
+    "_unread": false,
+    "_images": [
+      ["default.png", "Header image"]
+      ],
+    "_text": [
+      "What you see before your very eyes is my own design, made from scratch.",
+      "I can't say that this is perfect design nor perfectly made. However, I actually did it! I can barely believe it. All these times I've made shitty websites and now this: The best of the shitty websites!",
+      "How did I do it then?",
+    "I had to start somewhere so I actually started with the smallest piece, this Card.",
+    "card.py is responsible for the data this card holds, such as this text, paths to header image and the possibility to hold even more pictures (However I have not implemented this in any card. (Yet...))",
+    "After building a cardclass I began building the website implementation in Flask. This part was actually really fun since I've been working with Flask before and everything just came together, but as a horrible eye-sore since no CSS were applied. That was the next step.",
+    "I think I wrestled with the CSS like a madman. I have yet to try out Less, Sass and all those really nice tools. I just went at it like a caveman. After an insane amount of headache inducing 'width: 100%', I found out that the smart thing is to divide the website in rows and columns. This helped an insane amount with the overall size issues I had... We should however not talk about designing mobile-friendly websites. That is a thing of this sites future.",
+    "To make the cards act like I wanted them to I had to use Javascript. Before I continue to ramble on and on, I feel like I have to tell you that I never intended to use Javascript for a website. Somehow it feels that a website only gets more complicated to use when one needs to take this magical tool in use. However, I wanted to try this card-thing out!",
+    "So, I made one function to 'flip over' and show its back. With some CSS magic I made it grow into a larger thing, the one you're reading now. I am still not sure if this is a good move. It was however fun and some of my friends actually said 'Hey, that is nice'. I am already thinking about a simpler website design, but scrolling sideways, that's something else, isn't it?",
+    "Well well. Next thing to implement here, besides one of the million things I want to do, is the mobile-friendly css. I am however surprised that the side-scrolling magically works 'At least on my machine'-style."
+      ],
+    "_title": "Hello World",
+    "_id": 1
+  },
+  {
+    "_description": "A script language created without the need for shift",
+    "_unread": false,
+    "_images": [
+      ["no-shift.png", "no-shift logo"]
+      ],
+    "_text": [
+      "no-shift is a script language I and Magnus Jansson (sadly, we're not related.) created. All files ending with '.ns' is parsed with parser written in ruby which translated the program via extensive rules, defined by the no-shift EBNF. The translation resulted in a node tree which could be evaluated at any time.",
+    "Our goal was to create a language where you never needed to use shifted characters on the keyboard, therefore the only valid characters were:",
+    "abcdefghijklmnopqrstuvwxyz‘-.,<+",
+    "and this limitation made the task horribly tough and really fun since we lost a lot of delimiters such as, (), [] and {}. It turned out that delimiters would help really really much...",
+    "A small code example, which also demonstrates the third bool maybe: ",
+    "",
+    "<< A program that might print 'Hello World' in the terminal <<",
+    "message isnow ‘Hello’",
+    "message isnow message inc ‘ world!’",
+    "if maybe then output message ifnot then nope",
+    "no-shift got a quite extensive EBNF grammar however not all were implemented due to loss of time.",
+    "The slideshow from the official presentation of no-shift were published on no-shift.com,  the webpage is sadly not online anymore. On the bright side, here is a link to the presentation:",
+    "https://goo.gl/4J41nR"
+      ],
+    "_title": "no-shift",
+    "_id": 2
+  },
+  {
+    "_description": "Last Card",
+    "_unread": false,
+    "_images": [
+      ["face.png", "It's a me!"]
+      ],
+    "_text": [
+    "This is the backside of the last card.",
+    "Congratulations!",
+    "I never thought anyone would actually get this far. Anywho top picture is, as your probably thought out, a picture of me.",
+    "It is a picture from that one time in San Fransisco. It's a really nice town, you should go if you have the possibility."
+    ],
+    "_title": "The Last Card",
+    "_id": 3
+  }
+]
