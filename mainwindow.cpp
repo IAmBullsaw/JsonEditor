@@ -4,6 +4,7 @@
 #include <QDebug>
 #include <QString>
 #include <QFileDialog>
+#include <QWidget>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -21,14 +22,13 @@ MainWindow::~MainWindow()
 void MainWindow::populate_window()
 {
     QStringList titles{jdata.get_card_titles()};
-    qDebug() << "titles: ";
+    qDebug() << "populate_window: titles = ";
     foreach (QString s, titles) {
         qDebug() << s;
-
-        QLabel l{s};
-        ui->card_list->addItem(l.layout());
-
+        QLabel* l = new QLabel(s);
+        ui->card_list->addWidget(l);
     }
+    qDebug() << "populate window: Done";
 }
 
 void MainWindow::on_actionOpen_file_triggered()
