@@ -5,6 +5,9 @@
 #include <QString>
 #include <QFileDialog>
 #include <QWidget>
+#include <QFrame>
+#include "clcard.h"
+#include "constants.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -14,25 +17,35 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 }
 
-MainWindow::~MainWindow()
-{
+MainWindow::~MainWindow() {
     delete ui;
 }
 
-void MainWindow::populate_window()
-{
-    QStringList titles{jdata.get_card_titles()};
+void MainWindow::populate_window() {
+    std::vector<QJsonObject> new_cards = jdata.get_cards();
     qDebug() << "populate_window: titles = ";
-    foreach (QString s, titles) {
+        foreach (QJsonObject o, new_cards) {
+        QString s = o.value(c_title).toString();
         qDebug() << s;
-        QLabel* l = new QLabel(s);
-        ui->card_list->addWidget(l);
+
+        //Adds one line before card
+        QFrame* line = new QFrame();
+        line->setFrameShape(QFrame::HLine);
+        line->setFrameShadow(QFrame::Sunken);
+        ui->card_list->addWidget(line);
+
+        // create and add card
+        ClCard* c = new ClCard(s,this);
+        ui->card_list->addWidget(c);
+
+        connect(c, SIGNAL(focus_changed(QString)),
+                this, SLOT(focus_changed(QString)));
+
     }
     qDebug() << "populate window: Done";
 }
 
-void MainWindow::on_actionOpen_file_triggered()
-{
+void MainWindow::on_actionOpen_file_triggered() {
     ui->statusBar->showMessage("Opening file...");
     qDebug() << "Opening file";
     QString file_name =
@@ -50,9 +63,13 @@ void MainWindow::on_actionOpen_file_triggered()
     }
 }
 
-void MainWindow::on_actionQuit_triggered()
-{
+void MainWindow::on_actionQuit_triggered() {
     qDebug() << "Quit: quitting";
     jdata.close_file();
     QCoreApplication::quit();
+}
+
+void MainWindow::focus_changed(QString)
+{
+    qDebug() << "focus_changed: listening";
 }

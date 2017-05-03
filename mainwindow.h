@@ -15,6 +15,7 @@ class MainWindow : public QMainWindow
 private slots:
     void on_actionOpen_file_triggered();
     void on_actionQuit_triggered();
+    void focus_changed(QString);
 
 public:
     explicit MainWindow(QWidget *parent = 0);
@@ -24,6 +25,7 @@ private:
     void populate_window();
     Ui::MainWindow *ui;
     JData jdata;
+    std::vector<QJsonObject> cards;
 };
 
 #endif // MAINWINDOW_H
