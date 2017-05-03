@@ -3,6 +3,7 @@
 #include <QJsonDocument>
 #include <QFile>
 #include <QDebug>
+#include <vector>
 
 JData::JData()
     :edited{false}, jdoc{}, cur_file{}
@@ -39,6 +40,15 @@ QStringList JData::get_card_titles() const
         titles.append(name);
     }
     return titles;
+}
+
+std::vector<QJsonObject> JData::get_cards() const {
+    std::vector<QJsonObject> cards;
+
+    foreach (QJsonValue const& v, jarray) {
+        cards.push_back(v.toObject());
+    }
+    return cards;
 }
 
 QJsonObject JData::get_card(QString const& title) const {

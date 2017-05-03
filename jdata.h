@@ -18,13 +18,13 @@ public:
     QJsonObject get_card(QString const& title) const;
 
     QStringList get_card_titles() const;
-
     void close_file();
     void save_file();
 
     void set_current_card(QString title);
     bool check_file_status() const;
 
+    std::vector<QJsonObject> get_cards() const;
 private:
     void open_file();
     void load_file();
