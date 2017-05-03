@@ -23,6 +23,7 @@ MainWindow::~MainWindow() {
 
 void MainWindow::populate_window() {
     std::vector<QJsonObject> new_cards = jdata.get_cards();
+    cards = new_cards;
     qDebug() << "populate_window: titles = ";
         foreach (QJsonObject o, new_cards) {
         QString s = o.value(c_title).toString();
@@ -69,7 +70,23 @@ void MainWindow::on_actionQuit_triggered() {
     QCoreApplication::quit();
 }
 
-void MainWindow::focus_changed(QString)
+void MainWindow::focus_changed(QString label)
 {
     qDebug() << "focus_changed: listening";
+    QJsonObject new_card;
+    foreach (QJsonObject o, cards) {
+        QString s = o.value(c_title).toString();
+        if (s == label) {
+            new_card = o;
+            qDebug() << "found card: " + s;
+            break;
+        }
+    }
+    qDebug() << new_card;
+    ui->lineEdit_title->setText( new_card.value(c_title).toString() );
+    ui->lineEdit_description->setText( new_card.value(c_description).toString() );
+    ui->lineEdit_id->setText( new_card.value(c_id).toString() );
+    ui->lineEdit_images->setText( new_card.value(c_images).toString() );
+    ui->textEdit_text->setText( new_card.value(c_text).toString() );
+
 }
