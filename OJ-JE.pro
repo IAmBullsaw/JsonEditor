@@ -25,11 +25,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    jdata.cpp
+    jdata.cpp \
+    clcard.cpp
 
 HEADERS  += mainwindow.h \
     constants.h \
-    jdata.h
+    jdata.h \
+    clcard.h
 
 FORMS    += mainwindow.ui
 
