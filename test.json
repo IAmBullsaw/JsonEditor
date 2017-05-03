@@ -2,9 +2,10 @@
   {
     "_description": "Click on a card!",
     "_unread": false,
-    "_images": [
-      ["welcome.png", "Header image"]
-      ],
+    "_images": ["welcome.png", "Header image1",
+	 "welcome.png", "Header image2",
+	 "welcome.png", "Header image3"]
+    ,
     "_text": [
       "Hello!",
       "What you see here are projects I've done or been a part of. Amongst them this website.",
@@ -17,7 +18,7 @@
     "_description": "I finally made this website and it turned out quite OK.",
     "_unread": false,
     "_images": [
-      ["default.png", "Header image"]
+      "default.png", "Header image"
       ],
     "_text": [
       "What you see before your very eyes is my own design, made from scratch.",
@@ -38,7 +39,7 @@
     "_description": "A script language created without the need for shift",
     "_unread": false,
     "_images": [
-      ["no-shift.png", "no-shift logo"]
+      "no-shift.png", "no-shift logo"
       ],
     "_text": [
       "no-shift is a script language I and Magnus Jansson (sadly, we're not related.) created. All files ending with '.ns' is parsed with parser written in ruby which translated the program via extensive rules, defined by the no-shift EBNF. The translation resulted in a node tree which could be evaluated at any time.",
@@ -62,7 +63,7 @@
     "_description": "Last Card",
     "_unread": false,
     "_images": [
-      ["face.png", "It's a me!"]
+      "face.png", "It's a me!"
       ],
     "_text": [
     "This is the backside of the last card.",

@@ -85,8 +85,25 @@ void MainWindow::focus_changed(QString label)
     qDebug() << new_card;
     ui->lineEdit_title->setText( new_card.value(c_title).toString() );
     ui->lineEdit_description->setText( new_card.value(c_description).toString() );
-    ui->lineEdit_id->setText( new_card.value(c_id).toString() );
-    ui->lineEdit_images->setText( new_card.value(c_images).toString() );
-    ui->textEdit_text->setText( new_card.value(c_text).toString() );
+    ui->lineEdit_id->setText( QString::number(new_card.value(c_id).toInt()) );
+
+    QJsonArray arr = new_card.value(c_images).toArray();
+    qDebug() << arr;
+    QString s{""};
+    foreach (QJsonValue v, arr) {
+        s += v.toString() + ", ";
+    }
+    s.resize(s.size()-2);
+    ui->lineEdit_images->setText( s );
+
+    arr = new_card.value(c_text).toArray();
+    qDebug() << arr;
+    s = "";
+    foreach (QJsonValue v, arr) {
+        s += v.toString() + "\n\n";
+    }
+    s.resize(s.size()-2);
+
+    ui->textEdit_text->setText( s );
 
 }

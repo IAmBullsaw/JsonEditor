@@ -82,7 +82,7 @@ void JData::load_file()
         } else {
             qDebug() << "load_file: **ERROR** It is not my card data";
         }
-    }
+    } else {qDebug() << "load_file: **ERROR** doc is null";}
 }
 
 void JData::close_file() {
