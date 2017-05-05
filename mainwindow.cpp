@@ -133,10 +133,33 @@ void MainWindow::focus_changed(QString label)
     s.resize(s.size()-2);
 
     ui->textEdit_text->setText( s );
-
 }
 
 void MainWindow::on_pushButton_saveCard_clicked()
 {
     qDebug() << "saveCard_clicked: haha";
+}
+
+void MainWindow::on_actionClose_file_triggered()
+{
+    bool confirm{true};
+    if (jdata.isEdited()) {
+        confirm = confirmThrowEdits();
+    }
+    if (confirm) {
+        remove(ui->card_list->layout());
+        empty_fields();
+        jdata.close_file();
+    }
+    qDebug() << "close_file: Closed file";
+}
+
+void MainWindow::empty_fields() {
+
+    ui->lineEdit_title->clear();
+    ui->lineEdit_description->clear();
+    ui->lineEdit_id->clear();
+    ui->lineEdit_images->clear();
+    ui->textEdit_text->clear();
+    qDebug() << "empty_fields: done";
 }
