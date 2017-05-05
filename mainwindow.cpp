@@ -6,6 +6,7 @@
 #include <QFileDialog>
 #include <QWidget>
 #include <QFrame>
+#include <QMessageBox>
 #include "clcard.h"
 #include "constants.h"
 
@@ -62,9 +63,18 @@ void MainWindow::populate_window() {
     ui->card_list->update();
     qDebug() << "populate window: Done";
 }
-
+/*!
+ * \brief MainWindow::confirmThrowEdits
+ * \return true if pressing OK
+ */
 bool MainWindow::confirmThrowEdits() {
-    return true;
+    QMessageBox msgBox;
+    msgBox.setWindowTitle("File has been edited!");
+    msgBox.setText("Do you want to exit and loose changes?");
+    msgBox.setStandardButtons(QMessageBox::Yes);
+    msgBox.addButton(QMessageBox::No);
+    msgBox.setDefaultButton(QMessageBox::No);
+    return msgBox.exec() == QMessageBox::Yes;
 }
 
 void MainWindow::on_actionOpen_file_triggered() {
@@ -155,7 +165,6 @@ void MainWindow::on_actionClose_file_triggered()
 }
 
 void MainWindow::empty_fields() {
-
     ui->lineEdit_title->clear();
     ui->lineEdit_description->clear();
     ui->lineEdit_id->clear();
