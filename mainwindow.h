@@ -26,8 +26,12 @@ public:
     ~MainWindow();
 
     void remove(QLayout* layout);
-    bool confirmThrowEdits();
+    bool yesNoDialogue(QString const& question);
     void empty_fields();
+    void closeEvent(QCloseEvent *event);
+public slots:
+    void onEditCard(const QString &string);
+    void onEditCard();
 private:
     void populate_window();
     Ui::MainWindow *ui;

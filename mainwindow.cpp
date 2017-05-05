@@ -7,6 +7,7 @@
 #include <QWidget>
 #include <QFrame>
 #include <QMessageBox>
+#include <QCloseEvent>
 #include "clcard.h"
 #include "constants.h"
 
@@ -16,10 +17,30 @@ MainWindow::MainWindow(QWidget *parent) :
     jdata{}
 {
     ui->setupUi(this);
+
+    connect(ui->lineEdit_description, SIGNAL(textEdited(QString)),
+            this, SLOT(onEditCard(QString const&)));
+    connect(ui->lineEdit_id, SIGNAL(textEdited(QString)),
+            this, SLOT(onEditCard(QString const&)));
+    connect(ui->lineEdit_images, SIGNAL(textEdited(QString)),
+            this, SLOT(onEditCard(QString const&)));
+    connect(ui->lineEdit_title, SIGNAL(textEdited(QString)),
+            this, SLOT(onEditCard(QString const&)));
+    connect(ui->textEdit_text, SIGNAL(textChanged()),
+            this, SLOT(onEditCard()));
 }
 
 MainWindow::~MainWindow() {
     delete ui;
+}
+
+void MainWindow::onEditCard(QString const& string) {
+    jdata.setEdited(true);
+    qDebug() << "onEditCard: " + string;
+}
+void MainWindow::onEditCard() {
+    jdata.setEdited(true);
+    qDebug() << "onEditCard: edited text";
 }
 
 void MainWindow::remove(QLayout* layout) {
@@ -31,7 +52,6 @@ void MainWindow::remove(QLayout* layout) {
         if (QLayout* l = child->layout())
             remove(l);
     }
-
     ui->card_list->update();
 }
 
@@ -67,10 +87,10 @@ void MainWindow::populate_window() {
  * \brief MainWindow::confirmThrowEdits
  * \return true if pressing OK
  */
-bool MainWindow::confirmThrowEdits() {
+bool MainWindow::yesNoDialogue(const QString &question) {
     QMessageBox msgBox;
     msgBox.setWindowTitle("File has been edited!");
-    msgBox.setText("Do you want to exit and loose changes?");
+    msgBox.setText(question);
     msgBox.setStandardButtons(QMessageBox::Yes);
     msgBox.addButton(QMessageBox::No);
     msgBox.setDefaultButton(QMessageBox::No);
@@ -81,7 +101,7 @@ void MainWindow::on_actionOpen_file_triggered() {
 
     bool confirm{true};
     if (jdata.isEdited()) {
-        confirm = confirmThrowEdits();
+        confirm = yesNoDialogue("Do you want to open new file and loose your changes?");
     }
 
     if (confirm) {
@@ -104,8 +124,14 @@ void MainWindow::on_actionOpen_file_triggered() {
 
 void MainWindow::on_actionQuit_triggered() {
     qDebug() << "Quit: quitting";
-    jdata.close_file();
-    QCoreApplication::quit();
+    bool confirm{true};
+    if (jdata.isEdited()) {
+        confirm = yesNoDialogue("Do you want to close the file and loose all changes?");
+    }
+    if (confirm) {
+        jdata.close_file();
+        QCoreApplication::quit();
+    }
 }
 
 void MainWindow::focus_changed(QString label)
@@ -154,7 +180,7 @@ void MainWindow::on_actionClose_file_triggered()
 {
     bool confirm{true};
     if (jdata.isEdited()) {
-        confirm = confirmThrowEdits();
+        confirm = yesNoDialogue("Do you want to close the file and loose all changes?");
     }
     if (confirm) {
         remove(ui->card_list->layout());
@@ -171,4 +197,18 @@ void MainWindow::empty_fields() {
     ui->lineEdit_images->clear();
     ui->textEdit_text->clear();
     qDebug() << "empty_fields: done";
+}
+
+
+void MainWindow::closeEvent (QCloseEvent *event)
+{
+    bool answer{true};
+    if (jdata.isEdited()) {
+        answer = yesNoDialogue("You have unsaved changes!\nAre you sure you want to quit?");
+    }
+    if (!answer) {
+        event->ignore();
+    } else {
+        event->accept();
+    }
 }
