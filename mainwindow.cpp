@@ -21,8 +21,22 @@ MainWindow::~MainWindow() {
     delete ui;
 }
 
+void MainWindow::remove(QLayout* layout) {
+    QLayoutItem* child;
+    while (ui->card_list->count() != 0) {
+        child = layout->takeAt(0);
+        if (QWidget* w = child->widget())
+            delete w;
+        if (QLayout* l = child->layout())
+            remove(l);
+    }
+
+    ui->card_list->update();
+}
+
 void MainWindow::populate_window() {
     std::vector<QJsonObject> new_cards = jdata.get_cards();
+    remove(ui->card_list->layout());
     cards = new_cards;
     qDebug() << "populate_window: titles = ";
         foreach (QJsonObject o, new_cards) {
@@ -39,10 +53,13 @@ void MainWindow::populate_window() {
         ClCard* c = new ClCard(s,this);
         ui->card_list->addWidget(c);
 
+        c->setMinimumWidth(c_card_minimum_width);
+
         connect(c, SIGNAL(focus_changed(QString)),
                 this, SLOT(focus_changed(QString)));
 
     }
+    ui->card_list->update();
     qDebug() << "populate window: Done";
 }
 

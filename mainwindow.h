@@ -21,6 +21,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+    void remove(QLayout* layout);
 private:
     void populate_window();
     Ui::MainWindow *ui;
