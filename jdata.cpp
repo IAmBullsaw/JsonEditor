@@ -85,6 +85,16 @@ void JData::load_file()
     } else {qDebug() << "load_file: **ERROR** doc is null";}
 }
 
+bool JData::isEdited() const
+{
+    return edited;
+}
+
+void JData::setEdited(bool value)
+{
+    edited = value;
+}
+
 void JData::close_file() {
     if (cur_file.isOpen())
         cur_file.close();

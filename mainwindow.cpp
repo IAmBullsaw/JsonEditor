@@ -63,21 +63,32 @@ void MainWindow::populate_window() {
     qDebug() << "populate window: Done";
 }
 
+bool MainWindow::confirmThrowEdits() {
+    return true;
+}
+
 void MainWindow::on_actionOpen_file_triggered() {
-    ui->statusBar->showMessage("Opening file...");
-    qDebug() << "Opening file";
-    QString file_name =
+
+    bool confirm{true};
+    if (jdata.isEdited()) {
+        confirm = confirmThrowEdits();
+    }
+
+    if (confirm) {
+        ui->statusBar->showMessage("Opening file...");
+        qDebug() << "Opening file";
+        QString file_name =
             QFileDialog::getOpenFileName(this,
                                          "Choose a JSON to open",
                                          "",
                                          tr("Json Files (*.json *.JSON);;Text files (*.txt)")
                                          );
-    qDebug() << "Open_file: chosen file '" << file_name << "'";
+        qDebug() << "Open_file: chosen file '" << file_name << "'";
 
-    if (file_name != "")
-    {
-        jdata.open_file(file_name);
-        populate_window();
+        if (file_name != "") {
+            jdata.open_file(file_name);
+            populate_window();
+        }
     }
 }
 
@@ -123,4 +134,9 @@ void MainWindow::focus_changed(QString label)
 
     ui->textEdit_text->setText( s );
 
+}
+
+void MainWindow::on_pushButton_saveCard_clicked()
+{
+    qDebug() << "saveCard_clicked: haha";
 }

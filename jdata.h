@@ -25,6 +25,9 @@ public:
     bool check_file_status() const;
 
     std::vector<QJsonObject> get_cards() const;
+    bool isEdited() const;
+    void setEdited(bool value);
+
 private:
     void open_file();
     void load_file();

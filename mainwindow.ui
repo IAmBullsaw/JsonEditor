@@ -154,6 +154,16 @@
           </property>
          </widget>
         </item>
+        <item row="6" column="1">
+         <widget class="QPushButton" name="pushButton_saveCard">
+          <property name="text">
+           <string>Save Card</string>
+          </property>
+          <property name="checkable">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
         <item row="7" column="1">
          <widget class="QPushButton" name="pushButton_resetCard">
           <property name="text">
@@ -161,10 +171,10 @@
           </property>
          </widget>
         </item>
-        <item row="6" column="1">
-         <widget class="QPushButton" name="pushButton_saveCard">
+        <item row="8" column="1">
+         <widget class="QPushButton" name="pushButton_deleteCard">
           <property name="text">
-           <string>Save Card</string>
+           <string>Delete Card</string>
           </property>
          </widget>
         </item>

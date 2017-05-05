@@ -17,11 +17,14 @@ private slots:
     void on_actionQuit_triggered();
     void focus_changed(QString);
 
+    void on_pushButton_saveCard_clicked();
+
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
     void remove(QLayout* layout);
+    bool confirmThrowEdits();
 private:
     void populate_window();
     Ui::MainWindow *ui;
