@@ -32,6 +32,8 @@ public:
 public slots:
     void onEditCard(const QString &string);
     void onEditCard();
+    void onEditId(const QString &string);
+    void onEditCheckbox(const int &in);
 private:
     void populate_window();
     Ui::MainWindow *ui;

@@ -28,11 +28,15 @@ public:
     bool isEdited() const;
     void setEdited(bool value);
 
+    bool isId_edited() const;
+    void setId_edited(bool value);
+
 private:
     void open_file();
     void load_file();
 
     bool edited; /* true if anything changed since last save */
+    bool id_edited; /* true if anything changed the card id*/
     QJsonDocument jdoc;
     QJsonArray jarray;
     QJsonObject jobject;

@@ -6,7 +6,7 @@
 #include <vector>
 
 JData::JData()
-    :edited{false}, jdoc{}, cur_file{}
+    :edited{false},id_edited{false}, jdoc{}, cur_file{}
 {}
 
 bool JData::set_file(QString const& filename) {
@@ -83,6 +83,16 @@ void JData::load_file()
             qDebug() << "load_file: **ERROR** It is not my card data";
         }
     } else {qDebug() << "load_file: **ERROR** doc is null";}
+}
+
+bool JData::isId_edited() const
+{
+    return id_edited;
+}
+
+void JData::setId_edited(bool value)
+{
+    id_edited = value;
 }
 
 bool JData::isEdited() const

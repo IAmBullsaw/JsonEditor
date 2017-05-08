@@ -23,7 +23,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->lineEdit_description, SIGNAL(textEdited(QString)),
             this, SLOT(onEditCard(QString const&)));
     connect(ui->lineEdit_id, SIGNAL(textEdited(QString)),
-            this, SLOT(onEditCard(QString const&)));
+            this, SLOT(onEditId(QString const&)));
+    connect(ui->checkBox_unread,SIGNAL(stateChanged(int)),
+            this,SLOT(onEditCheckbox(int)));
     connect(ui->lineEdit_images, SIGNAL(textEdited(QString)),
             this, SLOT(onEditCard(QString const&)));
     connect(ui->lineEdit_title, SIGNAL(textEdited(QString)),
@@ -36,16 +38,29 @@ MainWindow::~MainWindow() {
     delete ui;
 }
 
+void MainWindow::onEditCheckbox(int const& in) {
+    jdata.setEdited(true);
+    qDebug() << "onEditCheckbox: " + QString::number(in);
+}
+
 void MainWindow::onEditCard(QString const& string) {
     jdata.setEdited(true);
     qDebug() << "onEditCard: " + string;
 }
+
+void MainWindow::onEditId(QString const& string) {
+    jdata.setId_edited(true);
+    jdata.setEdited(true);
+    qDebug() << "onEditCard: id_edited " + string;
+}
+
 void MainWindow::onEditCard() {
     if (first_edit) {
         first_edit = false;
     } else {
         jdata.setEdited(true);
     }
+    qDebug() << "onEditText";
 }
 
 void MainWindow::remove(QLayout* layout) {
