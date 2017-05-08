@@ -14,7 +14,9 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    jdata{}
+    jdata{},
+    prev_edit_text_s{0},
+    first_edit{false}
 {
     ui->setupUi(this);
 
@@ -26,7 +28,7 @@ MainWindow::MainWindow(QWidget *parent) :
             this, SLOT(onEditCard(QString const&)));
     connect(ui->lineEdit_title, SIGNAL(textEdited(QString)),
             this, SLOT(onEditCard(QString const&)));
-    connect(ui->textEdit_text, SIGNAL(textChanged()),
+    connect(ui->plainTextEdit_text, SIGNAL(textChanged()),
             this, SLOT(onEditCard()));
 }
 
@@ -39,8 +41,11 @@ void MainWindow::onEditCard(QString const& string) {
     qDebug() << "onEditCard: " + string;
 }
 void MainWindow::onEditCard() {
-    jdata.setEdited(true);
-    qDebug() << "onEditCard: edited text";
+    if (first_edit) {
+        first_edit = false;
+    } else {
+        jdata.setEdited(true);
+    }
 }
 
 void MainWindow::remove(QLayout* layout) {
@@ -137,38 +142,45 @@ void MainWindow::on_actionQuit_triggered() {
 void MainWindow::focus_changed(QString label)
 {
     qDebug() << "focus_changed: listening";
-    QJsonObject new_card;
-    foreach (QJsonObject o, cards) {
-        QString s = o.value(c_title).toString();
-        if (s == label) {
-            new_card = o;
-            qDebug() << "found card: " + s;
-            break;
+    bool confirm{true};
+    if (jdata.isEdited()) {
+        confirm = yesNoDialogue("Do you want to close the file and loose all changes?");
+    }
+    if (confirm) {
+        QJsonObject new_card;
+        foreach (QJsonObject o, cards) {
+            QString s = o.value(c_title).toString();
+            if (s == label) {
+                new_card = o;
+                qDebug() << "found card: " + s;
+                break;
+            }
         }
-    }
-    qDebug() << new_card;
-    ui->lineEdit_title->setText( new_card.value(c_title).toString() );
-    ui->lineEdit_description->setText( new_card.value(c_description).toString() );
-    ui->lineEdit_id->setText( QString::number(new_card.value(c_id).toInt()) );
+        qDebug() << new_card;
+        ui->lineEdit_title->setText( new_card.value(c_title).toString() );
+        ui->lineEdit_description->setText( new_card.value(c_description).toString() );
+        ui->lineEdit_id->setText( QString::number(new_card.value(c_id).toInt()) );
 
-    QJsonArray arr = new_card.value(c_images).toArray();
-    qDebug() << arr;
-    QString s{""};
-    foreach (QJsonValue v, arr) {
-        s += v.toString() + ", ";
-    }
-    s.resize(s.size()-2);
-    ui->lineEdit_images->setText( s );
+        QJsonArray arr = new_card.value(c_images).toArray();
+        qDebug() << arr;
+        QString s{""};
+        foreach (QJsonValue v, arr) {
+            s += v.toString() + ", ";
+        }
+        s.resize(s.size()-2);
+        ui->lineEdit_images->setText( s );
 
-    arr = new_card.value(c_text).toArray();
-    qDebug() << arr;
-    s = "";
-    foreach (QJsonValue v, arr) {
-        s += v.toString() + "\n\n";
-    }
-    s.resize(s.size()-2);
+        arr = new_card.value(c_text).toArray();
+        qDebug() << arr;
+        s = "";
+        foreach (QJsonValue v, arr) {
+            s += v.toString() + "\n\n";
+        }
+        s.resize(s.size()-2);
 
-    ui->textEdit_text->setText( s );
+        first_edit = true; // don't want to trigger editText slot too early...
+        ui->plainTextEdit_text->document()->setPlainText( s );
+    }
 }
 
 void MainWindow::on_pushButton_saveCard_clicked()
@@ -195,7 +207,7 @@ void MainWindow::empty_fields() {
     ui->lineEdit_description->clear();
     ui->lineEdit_id->clear();
     ui->lineEdit_images->clear();
-    ui->textEdit_text->clear();
+    ui->plainTextEdit_text->clear();
     qDebug() << "empty_fields: done";
 }
 

@@ -37,6 +37,8 @@ private:
     Ui::MainWindow *ui;
     JData jdata;
     std::vector<QJsonObject> cards;
+    unsigned int prev_edit_text_s;
+    bool first_edit;
 };
 
 #endif // MAINWINDOW_H
