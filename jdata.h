@@ -31,6 +31,9 @@ public:
     bool isId_edited() const;
     void setId_edited(bool value);
 
+    void insert_card(QJsonObject const& card, QString const& id);
+    int get_next_id() const;
+
 private:
     void open_file();
     void load_file();

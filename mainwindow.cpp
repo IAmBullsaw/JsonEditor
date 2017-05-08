@@ -43,6 +43,13 @@ void MainWindow::onEditCheckbox(int const& in) {
     qDebug() << "onEditCheckbox: " + QString::number(in);
 }
 
+void MainWindow::reset_edited()
+{
+    qDebug() << "resetting edited";
+    jdata.setEdited(false);
+    jdata.setId_edited(false);
+}
+
 void MainWindow::onEditCard(QString const& string) {
     jdata.setEdited(true);
     qDebug() << "onEditCard: " + string;
@@ -78,7 +85,6 @@ void MainWindow::remove(QLayout* layout) {
 void MainWindow::populate_window() {
     std::vector<QJsonObject> new_cards = jdata.get_cards();
     remove(ui->card_list->layout());
-    cards = new_cards;
     qDebug() << "populate_window: titles = ";
         foreach (QJsonObject o, new_cards) {
         QString s = o.value(c_title).toString();
@@ -101,8 +107,22 @@ void MainWindow::populate_window() {
 
     }
     ui->card_list->update();
+    empty_fields();
+    reset_edited();
     qDebug() << "populate window: Done";
 }
+
+void MainWindow::add_card_to_list(ClCard* const& c) {
+    QFrame* line = new QFrame();
+    line->setFrameShape(QFrame::HLine);
+    line->setFrameShadow(QFrame::Sunken);
+    ui->card_list->addWidget(line);
+
+    ui->card_list->addWidget(c);
+    connect(c, SIGNAL(focus_changed(QString)),
+            this, SLOT(focus_changed(QString)));
+}
+
 /*!
  * \brief MainWindow::confirmThrowEdits
  * \return true if pressing OK
@@ -149,6 +169,8 @@ void MainWindow::on_actionQuit_triggered() {
         confirm = yesNoDialogue("Do you want to close the file and loose all changes?");
     }
     if (confirm) {
+        empty_fields();
+        reset_edited();
         jdata.close_file();
         QCoreApplication::quit();
     }
@@ -163,11 +185,10 @@ void MainWindow::focus_changed(QString label)
     }
     if (confirm) {
         QJsonObject new_card;
-        foreach (QJsonObject o, cards) {
+        foreach (QJsonObject o, jdata.get_cards()) {
             QString s = o.value(c_title).toString();
             if (s == label) {
                 new_card = o;
-                qDebug() << "found card: " + s;
                 break;
             }
         }
@@ -177,7 +198,7 @@ void MainWindow::focus_changed(QString label)
         ui->lineEdit_id->setText( QString::number(new_card.value(c_id).toInt()) );
 
         QJsonArray arr = new_card.value(c_images).toArray();
-        qDebug() << arr;
+        qDebug() << "focus_changed: arr = " << arr;
         QString s{""};
         foreach (QJsonValue v, arr) {
             s += v.toString() + ", ";
@@ -186,7 +207,7 @@ void MainWindow::focus_changed(QString label)
         ui->lineEdit_images->setText( s );
 
         arr = new_card.value(c_text).toArray();
-        qDebug() << arr;
+        qDebug() << "focus_changed: text = " << arr;
         s = "";
         foreach (QJsonValue v, arr) {
             s += v.toString() + "\n\n";
@@ -195,12 +216,36 @@ void MainWindow::focus_changed(QString label)
 
         first_edit = true; // don't want to trigger editText slot too early...
         ui->plainTextEdit_text->document()->setPlainText( s );
+        reset_edited();
     }
 }
 
 void MainWindow::on_pushButton_saveCard_clicked()
 {
-    qDebug() << "saveCard_clicked: haha";
+    bool confirm{true};
+    if (jdata.isId_edited() ) {
+        confirm = yesNoDialogue("ID on this card has changed, are you sure you want to replace it?");
+    }
+    if (confirm) {
+        qDebug() << "saveCard_clicked: making new card";
+        QJsonObject card;
+        QJsonValue id(ui->lineEdit_id->text());
+        QJsonValue title(ui->lineEdit_title->text());
+        QJsonValue description(ui->lineEdit_description->text());
+        QJsonValue text(ui->plainTextEdit_text->document()->toPlainText());
+        QJsonValue images(ui->lineEdit_images->text());
+        card.insert(c_id, id);
+        card.insert(c_title, title);
+        card.insert(c_description, description);
+        card.insert(c_text, text);
+        card.insert(c_images, images);
+        qDebug() << "saveCard_clicked: inserting new card";
+        jdata.insert_card(card,ui->lineEdit_id->text());
+
+        add_card_to_list(new ClCard(ui->lineEdit_title->text(),this) );
+
+        reset_edited();
+    }
 }
 
 void MainWindow::on_actionClose_file_triggered()
@@ -212,6 +257,7 @@ void MainWindow::on_actionClose_file_triggered()
     if (confirm) {
         remove(ui->card_list->layout());
         empty_fields();
+        reset_edited();
         jdata.close_file();
     }
     qDebug() << "close_file: Closed file";
@@ -226,7 +272,6 @@ void MainWindow::empty_fields() {
     qDebug() << "empty_fields: done";
 }
 
-
 void MainWindow::closeEvent (QCloseEvent *event)
 {
     bool answer{true};
@@ -236,6 +281,20 @@ void MainWindow::closeEvent (QCloseEvent *event)
     if (!answer) {
         event->ignore();
     } else {
+        reset_edited();
         event->accept();
+    }
+}
+
+void MainWindow::on_pushButton_newCard_clicked()
+{
+    bool confirm{true};
+    if (jdata.isEdited()) {
+        confirm = yesNoDialogue("Current card has been edited! Do you want to add a new card and loose all changes?");
+    }
+    if (confirm) {
+        empty_fields();
+        ui->lineEdit_id->setText( QString::number(jdata.get_next_id()) );
+        reset_edited();
     }
 }

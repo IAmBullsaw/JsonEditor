@@ -2,10 +2,11 @@
   {
     "_description": "Click on a card!",
     "_unread": false,
-    "_images": ["welcome.png", "Header image1",
+    "_images": [
+     "welcome.png", "Header image1",
 	 "welcome.png", "Header image2",
-	 "welcome.png", "Header image3"]
-    ,
+     "welcome.png", "Header image3"
+     ],
     "_text": [
       "Hello!",
       "What you see here are projects I've done or been a part of. Amongst them this website.",

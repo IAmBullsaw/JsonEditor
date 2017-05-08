@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include "jdata.h"
+#include "clcard.h"
 
 #include <QMainWindow>
 namespace Ui {
@@ -21,6 +22,8 @@ private slots:
 
     void on_actionClose_file_triggered();
 
+    void on_pushButton_newCard_clicked();
+
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
@@ -35,12 +38,14 @@ public slots:
     void onEditId(const QString &string);
     void onEditCheckbox(const int &in);
 private:
+    void reset_edited();
     void populate_window();
     Ui::MainWindow *ui;
     JData jdata;
     std::vector<QJsonObject> cards;
     unsigned int prev_edit_text_s;
     bool first_edit;
+    void add_card_to_list(ClCard * const &c);
 };
 
 #endif // MAINWINDOW_H

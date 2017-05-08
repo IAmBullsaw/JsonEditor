@@ -157,7 +157,7 @@
           </property>
          </widget>
         </item>
-        <item row="6" column="1">
+        <item row="7" column="1">
          <widget class="QPushButton" name="pushButton_saveCard">
           <property name="text">
            <string>Save Card</string>
@@ -167,14 +167,14 @@
           </property>
          </widget>
         </item>
-        <item row="7" column="1">
+        <item row="8" column="1">
          <widget class="QPushButton" name="pushButton_resetCard">
           <property name="text">
            <string>Reset Card</string>
           </property>
          </widget>
         </item>
-        <item row="8" column="1">
+        <item row="9" column="1">
          <widget class="QPushButton" name="pushButton_deleteCard">
           <property name="text">
            <string>Delete Card</string>
@@ -183,6 +183,13 @@
         </item>
         <item row="5" column="1">
          <widget class="QPlainTextEdit" name="plainTextEdit_text"/>
+        </item>
+        <item row="6" column="1">
+         <widget class="QPushButton" name="pushButton_newCard">
+          <property name="text">
+           <string>New Card</string>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>

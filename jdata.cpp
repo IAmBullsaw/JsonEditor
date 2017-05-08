@@ -95,6 +95,32 @@ void JData::setId_edited(bool value)
     id_edited = value;
 }
 
+void JData::insert_card(QJsonObject const& card, QString const& id)
+{
+    bool found{false};
+    qDebug() << "insert_card: finding card to replace";
+    for(int i{0}; i < jarray.size(); i++) {
+        QJsonValueRef ref = jarray[i];
+        if (ref.toObject()[c_id] == id.toInt()) {
+            qDebug() << "insert_card: found one";
+            found = true;
+            ref = QJsonValue(card);
+        }
+    }
+    if (!found) {
+        jarray.append(card);
+    }
+    qDebug() << "insert_card: size = " << jarray.size();
+    foreach (QJsonValue v, jarray) {
+        qDebug() << v;
+    }
+}
+
+int JData::get_next_id() const
+{
+    return jarray.size();
+}
+
 bool JData::isEdited() const
 {
     return edited;
