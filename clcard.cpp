@@ -8,7 +8,7 @@ ClCard::ClCard(QString l, QWidget *parent) : QWidget(parent) {
 
 void ClCard::mousePressEvent(QMouseEvent *event) {
     event->accept();
-    qDebug() << "clcard  " +this->label->text();
+    qDebug() << "clcard: making = " +this->label->text();
     emit focus_changed(this->label->text());
 }
 
