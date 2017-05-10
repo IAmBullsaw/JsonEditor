@@ -236,7 +236,10 @@ void MainWindow::on_pushButton_saveCard_clicked()
         QStringList lis = (ui->plainTextEdit_text->document()->toPlainText()).split("\n\n");
         QJsonArray text = QJsonArray::fromStringList(lis);
 
-        QJsonValue images(ui->lineEdit_images->text());
+        lis = (ui->lineEdit_images->text()).split(", ");
+
+        QJsonArray images = QJsonArray::fromStringList(lis);
+
         card.insert(c_id, id);
         card.insert(c_title, title);
         card.insert(c_description, description);
@@ -245,9 +248,9 @@ void MainWindow::on_pushButton_saveCard_clicked()
         qDebug() << "saveCard_clicked: inserting new card";
         jdata.insert_card(card,ui->lineEdit_id->text());
 
-        //add_card_to_list(new ClCard(ui->lineEdit_title->text(),this) );
         populate_window();
         reset_edited();
+        jdata.setSaved(false);
     }
 }
 
@@ -280,6 +283,8 @@ void MainWindow::closeEvent (QCloseEvent *event)
     bool answer{true};
     if (jdata.isEdited()) {
         answer = yesNoDialogue("You have unsaved changes!\nAre you sure you want to quit?");
+    } else if (!jdata.isSaved()){
+        answer = yesNoDialogue("You have added a card but not saved!\nAre you sure you want to quit?");
     }
     if (!answer) {
         event->ignore();

@@ -34,12 +34,16 @@ public:
     void insert_card(QJsonObject const& card, QString const& id);
     int get_next_id() const;
 
+    bool isSaved() const;
+    void setSaved(bool value);
+
 private:
     void open_file();
     void load_file();
 
     bool edited; /* true if anything changed since last save */
-    bool id_edited; /* true if anything changed the card id*/
+    bool id_edited; /* true if anything changed the card id */
+    bool saved; /* true if all is saved to file */
     QJsonDocument jdoc;
     QJsonArray jarray;
     QJsonObject jobject;

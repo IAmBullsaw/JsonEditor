@@ -4,9 +4,10 @@
 #include <QFile>
 #include <QDebug>
 #include <vector>
+#include <QMessageBox>
 
 JData::JData()
-    :edited{false},id_edited{false}, jdoc{}, cur_file{}
+    :edited{false},id_edited{false},saved{true}, jdoc{}, cur_file{}
 {}
 
 bool JData::set_file(QString const& filename) {
@@ -85,6 +86,16 @@ void JData::load_file()
     } else {qDebug() << "load_file: **ERROR** doc is null";}
 }
 
+bool JData::isSaved() const
+{
+    return saved;
+}
+
+void JData::setSaved(bool value)
+{
+    saved = value;
+}
+
 bool JData::isId_edited() const
 {
     return id_edited;
@@ -138,17 +149,29 @@ void JData::close_file() {
 
 bool JData::save_file()
 {
-    QString filename = get_current_file() + ".savetest";
-    qDebug() << "Saving the file: " << filename;
+    QMessageBox msgBox;
+    msgBox.setWindowTitle("Do you want to overwrite the file?");
+    msgBox.setText("Think before you act! Overwrite file?");
+    msgBox.setStandardButtons(QMessageBox::Yes);
+    msgBox.addButton(QMessageBox::No);
+    msgBox.setDefaultButton(QMessageBox::No);
+    bool success{false};
+    if (msgBox.exec() == QMessageBox::Yes) {
+        QString filename = get_current_file();
+        qDebug() << "Saving the file: " << filename;
 
-    QFile savefile(filename);
-    if (!savefile.open(QIODevice::WriteOnly)) {
-        qWarning("Couldn't open save file.");
-        return false;
+        QFile savefile(filename);
+        if (!savefile.open(QIODevice::WriteOnly)) {
+            qWarning("Couldn't open save file.");
+            success = false;
+        } else {
+            QJsonDocument ndock(this->jarray);
+            savefile.write(ndock.toJson());
+            success = true;
+        }
     }
-    QJsonDocument ndock(this->jarray);
-    savefile.write(ndock.toJson());
-    return true;
+    setSaved(success);
+    return success;
 }
 
 bool JData::check_file_status() const {
