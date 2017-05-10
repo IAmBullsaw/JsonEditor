@@ -136,6 +136,21 @@ void JData::close_file() {
         cur_file.close();
 }
 
+bool JData::save_file()
+{
+    QString filename = get_current_file() + ".savetest";
+    qDebug() << "Saving the file: " << filename;
+
+    QFile savefile(filename);
+    if (!savefile.open(QIODevice::WriteOnly)) {
+        qWarning("Couldn't open save file.");
+        return false;
+    }
+    QJsonDocument ndock(this->jarray);
+    savefile.write(ndock.toJson());
+    return true;
+}
+
 bool JData::check_file_status() const {
     bool status{true};
 

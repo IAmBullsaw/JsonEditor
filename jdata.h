@@ -19,7 +19,7 @@ public:
 
     QStringList get_card_titles() const;
     void close_file();
-    void save_file();
+    bool save_file();
 
     void set_current_card(QString title);
     bool check_file_status() const;

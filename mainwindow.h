@@ -16,13 +16,15 @@ class MainWindow : public QMainWindow
 private slots:
     void on_actionOpen_file_triggered();
     void on_actionQuit_triggered();
-    void focus_changed(QString);
+    void focus_changed(QString, int id);
 
     void on_pushButton_saveCard_clicked();
 
     void on_actionClose_file_triggered();
 
     void on_pushButton_newCard_clicked();
+
+    void on_actionSave_file_triggered();
 
 public:
     explicit MainWindow(QWidget *parent = 0);

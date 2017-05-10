@@ -88,6 +88,7 @@ void MainWindow::populate_window() {
     qDebug() << "populate_window: titles = ";
         foreach (QJsonObject o, new_cards) {
         QString s = o.value(c_title).toString();
+        int id = o.value(c_id).toInt();
         qDebug() << s;
 
         //Adds one line before card
@@ -97,13 +98,13 @@ void MainWindow::populate_window() {
         ui->card_list->addWidget(line);
 
         // create and add card
-        ClCard* c = new ClCard(s,this);
+        ClCard* c = new ClCard(s,id,this);
         ui->card_list->addWidget(c);
 
         c->setMinimumWidth(c_card_minimum_width);
 
-        connect(c, SIGNAL(focus_changed(QString)),
-                this, SLOT(focus_changed(QString)));
+        connect(c, SIGNAL(focus_changed(QString,int)),
+                this, SLOT(focus_changed(QString,int)));
 
     }
     ui->card_list->update();
@@ -119,8 +120,8 @@ void MainWindow::add_card_to_list(ClCard* const& c) {
     ui->card_list->addWidget(line);
 
     ui->card_list->addWidget(c);
-    connect(c, SIGNAL(focus_changed(QString)),
-            this, SLOT(focus_changed(QString)));
+    connect(c, SIGNAL(focus_changed(QString,int)),
+            this, SLOT(focus_changed(QString,int)));
 }
 
 /*!
@@ -176,7 +177,7 @@ void MainWindow::on_actionQuit_triggered() {
     }
 }
 
-void MainWindow::focus_changed(QString label)
+void MainWindow::focus_changed(QString label, int id)
 {
     qDebug() << "focus_changed: listening";
     bool confirm{true};
@@ -186,8 +187,8 @@ void MainWindow::focus_changed(QString label)
     if (confirm) {
         QJsonObject new_card;
         foreach (QJsonObject o, jdata.get_cards()) {
-            QString s = o.value(c_title).toString();
-            if (s == label) {
+            int i = o.value(c_id).toInt();
+            if (i == id) {
                 new_card = o;
                 break;
             }
@@ -205,9 +206,7 @@ void MainWindow::focus_changed(QString label)
         }
         s.resize(s.size()-2);
         ui->lineEdit_images->setText( s );
-
         arr = new_card.value(c_text).toArray();
-        qDebug() << "focus_changed: text = " << arr;
         s = "";
         foreach (QJsonValue v, arr) {
             s += v.toString() + "\n\n";
@@ -229,10 +228,14 @@ void MainWindow::on_pushButton_saveCard_clicked()
     if (confirm) {
         qDebug() << "saveCard_clicked: making new card";
         QJsonObject card;
-        QJsonValue id(ui->lineEdit_id->text());
+        QJsonValue id(ui->lineEdit_id->text().toInt());
+        qDebug() << "id: " << id;
         QJsonValue title(ui->lineEdit_title->text());
         QJsonValue description(ui->lineEdit_description->text());
-        QJsonValue text(ui->plainTextEdit_text->document()->toPlainText());
+
+        QStringList lis = (ui->plainTextEdit_text->document()->toPlainText()).split("\n\n");
+        QJsonArray text = QJsonArray::fromStringList(lis);
+
         QJsonValue images(ui->lineEdit_images->text());
         card.insert(c_id, id);
         card.insert(c_title, title);
@@ -242,8 +245,8 @@ void MainWindow::on_pushButton_saveCard_clicked()
         qDebug() << "saveCard_clicked: inserting new card";
         jdata.insert_card(card,ui->lineEdit_id->text());
 
-        add_card_to_list(new ClCard(ui->lineEdit_title->text(),this) );
-
+        //add_card_to_list(new ClCard(ui->lineEdit_title->text(),this) );
+        populate_window();
         reset_edited();
     }
 }
@@ -296,5 +299,17 @@ void MainWindow::on_pushButton_newCard_clicked()
         empty_fields();
         ui->lineEdit_id->setText( QString::number(jdata.get_next_id()) );
         reset_edited();
+    }
+}
+
+void MainWindow::on_actionSave_file_triggered()
+{
+    qDebug() << "Saving file...";
+    bool confirm{true};
+    if (jdata.isEdited()) {
+        confirm = yesNoDialogue("Current card has been edited! Do you want to add a new card and loose all changes?");
+    }
+    if (confirm) {
+        jdata.save_file();
     }
 }
