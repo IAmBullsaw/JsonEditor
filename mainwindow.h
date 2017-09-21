@@ -17,13 +17,9 @@ private slots:
     void on_actionOpen_file_triggered();
     void on_actionQuit_triggered();
     void focus_changed(QString, int id);
-
     void on_pushButton_saveCard_clicked();
-
     void on_actionClose_file_triggered();
-
     void on_pushButton_newCard_clicked();
-
     void on_actionSave_file_triggered();
 
 public:
@@ -48,6 +44,13 @@ private:
     unsigned int prev_edit_text_s;
     bool first_edit;
     void add_card_to_list(ClCard * const &c);
+
+    void set_id(int id);
+    void set_title(QString title);
+    void set_description(QString description);
+    void set_headerhref(QString href);
+    void set_headeralt(QString alt);
+    void set_content(QJsonArray content);
 };
 
 #endif // MAINWINDOW_H

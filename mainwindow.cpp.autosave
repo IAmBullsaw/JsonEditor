@@ -219,6 +219,7 @@ void MainWindow::set_content(QJsonArray content)
             qDebug() << "content p: " << v;
             it++;
             s += (*it).toString();
+            qDebug() << ""
             s += "\n\n";
         }
         else if (v == c_content_li)
