@@ -213,12 +213,14 @@ void MainWindow::set_content(QJsonArray content)
 
     for (it;it != content.end(); it++)
     {
+        // TODO: FIX THIS LOOP
         QString v = (*it).toString();
         if (v == c_content_p)
         {
             qDebug() << "content p: " << v;
             it++;
             s += (*it).toString();
+            qDebug() << ""
             s += "\n\n";
         }
         else if (v == c_content_li)
