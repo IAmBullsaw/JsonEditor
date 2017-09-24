@@ -204,49 +204,53 @@ void MainWindow::set_headeralt(QString alt)
     ui->lineEdit_headeralt->setText(alt);
 }
 
+QJsonArray MainWindow::getContent(QStringList lis) {
+    QJsonArray content;
+    QStringList::iterator it = lis.begin();
+    for (it; it != lis.end(); ++lis)
+    {
+        qDebug() << *it;
+    }
+
+    return content;
+}
+
+
 void MainWindow::set_content(QJsonArray content)
 {
     qDebug() << "focus_changed: arr = " << content;
     QString s{""};
 
     QJsonArray::iterator it = content.begin();
-
-    for (it;it != content.end(); it++)
+    for (int count = content.size()/2; count > 0; --count)
     {
-        // TODO: FIX THIS LOOP
         QString v = (*it).toString();
+        qDebug() << "V: " << v << " count: " << count;
+        ++it;
         if (v == c_content_p)
         {
-            qDebug() << "content p: " << v;
-            it++;
             s += (*it).toString();
-            qDebug() << ""
             s += "\n\n";
         }
         else if (v == c_content_li)
         {
-            qDebug() << "content li: " << v;
+            QJsonObject o = (*it).toObject();
             s += "(";
-            it++;
-            s += (*it).toString();
+            s += o.value(c_content_alt).toString();
             s += ")[";
-            it++;
-            s += (*it).toString();
+            s += o.value(c_content_href).toString();
             s += "]";
             s += "\n\n";
         }
         else if (v == c_content_img)
         {
-            qDebug() << "content img: " << v;
+            QJsonObject o = (*it).toObject();
             s += "(";
-            it++;
-            s += (*it).toString();
+            s += o.value(c_content_alt).toString();
             s += ")[";
-            it++;
-            s += (*it).toString();
+            s += o.value(c_content_href).toString();
             s += "]{";
-            it++;
-            s += (*it).toString();
+            s += o.value(c_content_image_text).toString();
             s += "}";
             s += "\n\n";
         }
@@ -254,20 +258,13 @@ void MainWindow::set_content(QJsonArray content)
         {
             qDebug() << "set_content: don't know how to process '" << v << "'";
         }
+        ++it;
     }
-
-    foreach (QJsonValue v, content) {
-        s += v.toString() + "\n\n";
-    }
-    s.resize(s.size()-2);
 
     first_edit = true; // don't want to trigger editText slot too early...
     ui->plainTextEdit_content->document()->setPlainText( s );
 }
 
-// ui->lineEdit_id->setText( QString::number(new_card.value(c_id).toInt()) );
-// ui->lineEdit_title->setText( new_card.value(c_title).toString() );
-// ui->lineEdit_description->setText( new_card.value(c_description).toString() );
 void MainWindow::focus_changed(QString label, int id)
 {
     qDebug() << "focus_changed: listening";
@@ -310,6 +307,9 @@ void MainWindow::on_pushButton_saveCard_clicked()
         QJsonValue description(ui->lineEdit_description->text());
 
         QStringList lis = (ui->plainTextEdit_content->document()->toPlainText()).split("\n\n");
+
+        QJsonArray content = getContent(lis);
+
         QJsonArray text = QJsonArray::fromStringList(lis);
 
         //lis = (ui->lineEdit_images->text()).split(", ");
