@@ -14,10 +14,12 @@ bool JData::set_file(QString const& filename) {
     bool success{true};
     QString temp{get_current_file()};
     cur_file.setFileName(filename);
+    /*
     if (!cur_file.exists()) {
         cur_file.setFileName(temp);
         success = false;
     }
+    */
     return success;
 }
 
@@ -159,7 +161,9 @@ bool JData::save_file()
     if (msgBox.exec() == QMessageBox::Yes) {
         QString filename = get_current_file();
         qDebug() << "Saving the file: " << filename;
-
+        if (filename.isNull()) {
+            qWarning("Filename is null!");
+        }
         QFile savefile(filename);
         if (!savefile.open(QIODevice::WriteOnly)) {
             qWarning("Couldn't open save file.");

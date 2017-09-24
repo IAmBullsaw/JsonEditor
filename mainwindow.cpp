@@ -436,6 +436,17 @@ void MainWindow::on_actionSave_file_triggered()
         confirm = yesNoDialogue("Current card has been edited! Do you want to add a new card and loose all changes?");
     }
     if (confirm) {
+        if (jdata.get_current_file().isNull()) {
+            qDebug() << "filename is null";
+            QString filename = QFileDialog::getSaveFileName(this,
+                                                            "Choose a filename!",
+                                                            "",
+                                                            tr("Json Files (*.json *.JSON);;Text files (*.txt)")
+                                                            );
+            if (filename != "") {
+                jdata.set_file(filename);
+            }
+        }
         jdata.save_file();
     }
 }
