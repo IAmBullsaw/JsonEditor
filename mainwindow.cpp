@@ -207,7 +207,9 @@ void MainWindow::set_headeralt(QString alt)
 bool MainWindow::is_link(QString const& str) {
     // Link regex
     // ^\({1}([^){1}\n]+)\){1}\[{1}([^]{1}\n]+)\]{1}$
-    QRegularExpression re("^\\({1}([^){1}\\n]+)\\){1}\\[{1}([^]{1}\\n]+)\\]{1}$");
+    // new one
+    // ^\(([^)]+)\)\[([^]\n]+)\]$
+    QRegularExpression re("^\\(([^)]+)\\)\\[([^]\\n]+)\\]$");
     QRegularExpressionMatch match = re.match(str);
     return match.hasMatch();
 }
@@ -221,7 +223,7 @@ bool MainWindow::is_image(QString const& str) {
 }
 
 QJsonObject MainWindow::build_link(QString const& str) {
-    QRegularExpression re("^\\({1}([^){1}\\n]+)\\){1}\\[{1}([^]{1}\\n]+)\\]{1}$");
+    QRegularExpression re("^\\(([^)]+)\\)\\[([^]\\n]+)\\]$");
     QRegularExpressionMatch match = re.match(str);
     QString alt = match.captured(1);
     QString href = match.captured(2);
@@ -448,5 +450,6 @@ void MainWindow::on_actionSave_file_triggered()
             }
         }
         jdata.save_file();
+        reset_edited();
     }
 }

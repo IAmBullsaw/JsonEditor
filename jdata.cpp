@@ -108,7 +108,7 @@ void JData::setId_edited(bool value)
     id_edited = value;
 }
 
-void JData::insert_card(QJsonObject const& card, QString const& id)
+void JData::insert_card(QJsonObject & card, QString const& id)
 {
     bool found{false};
     qDebug() << "insert_card: finding card to replace";
@@ -121,7 +121,25 @@ void JData::insert_card(QJsonObject const& card, QString const& id)
         }
     }
     if (!found) {
-        jarray.append(card);
+
+        if (jarray.size() == 0) {
+            jarray.append(card);
+        } else {
+            qDebug() << "Adding new card...";
+            int new_id = card.value(c_id).toInt() - 1;
+            qDebug() << "new id: " << new_id;
+            card.remove(c_id);
+            card.insert(c_id,new_id);
+            qDebug() << "new card: " << card;
+            jarray.insert(jarray.size()-1,card);
+            QJsonObject last_card = jarray.at(jarray.size()-1).toObject();
+            qDebug() << "last card: " << last_card;
+            last_card.remove(c_id);
+            last_card.insert(c_id,id.toInt());
+            qDebug() << "last card: " << last_card;
+            jarray.pop_back();
+            jarray.append(last_card);
+        }
     }
     qDebug() << "insert_card: size = " << jarray.size();
     foreach (QJsonValue v, jarray) {
