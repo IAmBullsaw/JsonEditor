@@ -51,6 +51,11 @@ private:
     void set_headerhref(QString href);
     void set_headeralt(QString alt);
     void set_content(QJsonArray content);
+    QJsonArray getContent(QStringList const& lis);
+    bool is_image(QString const& str);
+    bool is_link(QString const& str);
+    QJsonObject build_link(QString const& str);
+    QJsonObject build_image(QString const& str);
 };
 
 #endif // MAINWINDOW_H

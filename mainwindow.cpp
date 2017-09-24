@@ -204,14 +204,63 @@ void MainWindow::set_headeralt(QString alt)
     ui->lineEdit_headeralt->setText(alt);
 }
 
-QJsonArray MainWindow::getContent(QStringList lis) {
-    QJsonArray content;
-    QStringList::iterator it = lis.begin();
-    for (it; it != lis.end(); ++lis)
-    {
-        qDebug() << *it;
-    }
+bool MainWindow::is_link(QString const& str) {
+    // Link regex
+    // ^\({1}([^){1}\n]+)\){1}\[{1}([^]{1}\n]+)\]{1}$
+    QRegularExpression re("^\\({1}([^){1}\\n]+)\\){1}\\[{1}([^]{1}\\n]+)\\]{1}$");
+    QRegularExpressionMatch match = re.match(str);
+    return match.hasMatch();
+}
 
+bool MainWindow::is_image(QString const& str) {
+    // Image regex
+    // ^\({1}([^){1}]+)\){1}\[{1}([^]{1}]+)\]{1}{{1}([^}\n]*)}{1}$
+    QRegularExpression re("^\\({1}([^){1}]+)\\){1}\\[{1}([^]{1}]+)\\]{1}{{1}([^}\\n]*)}{1}$");
+    QRegularExpressionMatch match = re.match(str);
+    return match.hasMatch();
+}
+
+QJsonObject MainWindow::build_link(QString const& str) {
+    QRegularExpression re("^\\({1}([^){1}\\n]+)\\){1}\\[{1}([^]{1}\\n]+)\\]{1}$");
+    QRegularExpressionMatch match = re.match(str);
+    QString alt = match.captured(1);
+    QString href = match.captured(2);
+    QJsonObject link;
+    link.insert(c_content_alt, QJsonValue(alt));
+    link.insert(c_content_href, QJsonValue(href));
+    return link;
+}
+
+QJsonObject MainWindow::build_image(QString const& str) {
+    QRegularExpression re("^\\({1}([^){1}]+)\\){1}\\[{1}([^]{1}]+)\\]{1}{{1}([^}\\n]*)}{1}$");
+    QRegularExpressionMatch match = re.match(str);
+    QString alt = match.captured(1);
+    QString href = match.captured(2);
+    QString image_text = match.captured(3);
+    QJsonObject img;
+    img.insert(c_content_alt, QJsonValue(alt));
+    img.insert(c_content_href, QJsonValue(href));
+    img.insert(c_content_image_text, QJsonValue(image_text));
+    return img;
+}
+QJsonArray MainWindow::getContent(QStringList const& lis) {
+    QJsonArray content;
+    for (QString s: lis) {
+        if (is_link(s)){
+            QJsonObject link = build_link(s);
+            content.append(QJsonValue(c_content_li));
+            content.append(QJsonValue(link));
+
+        } else if (is_image(s)) {
+            QJsonObject img = build_image(s);
+            content.append(QJsonValue(c_content_img));
+            content.append(QJsonValue(img));
+        } else if (!s.isEmpty()){
+            content.append(QJsonValue(c_content_p));
+            content.append(QJsonValue(s));
+        }
+    }
+    qDebug() << content;
     return content;
 }
 
@@ -305,25 +354,20 @@ void MainWindow::on_pushButton_saveCard_clicked()
         qDebug() << "id: " << id;
         QJsonValue title(ui->lineEdit_title->text());
         QJsonValue description(ui->lineEdit_description->text());
-
+        QJsonValue header_href(ui->lineEdit_headerhref->text());
+        QJsonValue header_alt(ui->lineEdit_headeralt ->text());
         QStringList lis = (ui->plainTextEdit_content->document()->toPlainText()).split("\n\n");
-
         QJsonArray content = getContent(lis);
-
-        QJsonArray text = QJsonArray::fromStringList(lis);
-
-        //lis = (ui->lineEdit_images->text()).split(", ");
-
-        QJsonArray images = QJsonArray::fromStringList(lis);
 
         card.insert(c_id, id);
         card.insert(c_title, title);
         card.insert(c_description, description);
-        card.insert(c_text, text);
-        card.insert(c_images, images);
+        card.insert(c_headerhref , header_href);
+        card.insert(c_headeralt, header_alt);
+        card.insert(c_content, content);
         qDebug() << "saveCard_clicked: inserting new card";
+        qDebug() << card;
         jdata.insert_card(card,ui->lineEdit_id->text());
-
         populate_window();
         reset_edited();
         jdata.setSaved(false);
