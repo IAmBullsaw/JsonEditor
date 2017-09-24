@@ -267,6 +267,7 @@
   <tabstop>lineEdit_title</tabstop>
   <tabstop>lineEdit_description</tabstop>
   <tabstop>lineEdit_headerhref</tabstop>
+  <tabstop>lineEdit_headeralt</tabstop>
   <tabstop>checkBox_unread</tabstop>
   <tabstop>plainTextEdit_content</tabstop>
   <tabstop>pushButton_newCard</tabstop>
