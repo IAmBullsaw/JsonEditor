@@ -206,8 +206,6 @@ void MainWindow::set_headeralt(QString alt)
 
 bool MainWindow::is_link(QString const& str) {
     // Link regex
-    // ^\({1}([^){1}\n]+)\){1}\[{1}([^]{1}\n]+)\]{1}$
-    // new one
     // ^\(([^)]+)\)\[([^]\n]+)\]$
     QRegularExpression re("^\\(([^)]+)\\)\\[([^]\\n]+)\\]$");
     QRegularExpressionMatch match = re.match(str);
